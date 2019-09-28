@@ -21,8 +21,8 @@ num=$(git log --pretty=oneline ${1}..${2}|wc -l)
 branch=${3/refs\/heads\//}
 repo=$(basename `pwd`)
 
-GIT_SUMMARY=` echo "${num} commit(s) pushed to ${repo} on branch '${branch}':" | jq -aR .`
-GIT_LOG=`git log --pretty=format:" %h by %an: %s%n" ${1}..${2} | jq -aR .`
+GIT_SUMMARY=` echo "${num} commit(s) pushed to ${repo} on branch '${branch}':" | jq -aR --slurp .`
+GIT_LOG=`git log --pretty=format:" %h by %an: %s%n" ${1}..${2} | jq -aR --slurp .`
 #echo  "{\"summary\":$GIT_SUMMARY , \"log\" : $GIT_LOG\"}" 
 curl  -X POST -H "Content-Type: application/json" -d "{\"summary\": $GIT_SUMMARY , \"log\" : $GIT_LOG }" http://127.0.0.1:1337/gitolite
 
