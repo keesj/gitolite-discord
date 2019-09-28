@@ -1,0 +1,29 @@
+#!/bin/bash
+#
+# The "post-receive" script is run after receive-pack has accepted a pack
+# and the repository has been updated.  It is passed arguments in through
+# stdin in the form
+#  <oldrev> <newrev> <refname>
+# For example:
+#  aa453216d1b3e49e7f6f98441fa56946ddcd6a20 68f7abf4e6f922807889f52bc043ecd31b79f814 refs/heads/master
+
+netstat -na | grep tcp | grep LISTEN | grep 1337 > /dev/null
+if [ $? -ne 0 ] 
+then
+	echo "chat bot not running call the police"
+	exit 1
+fi
+
+read line
+set -- $line
+
+num=$(git log --pretty=oneline ${1}..${2}|wc -l)
+branch=${3/refs\/heads\//}
+repo=$(basename `pwd`)
+
+GIT_SUMMARY=` echo "${num} commit(s) pushed to ${repo} on branch '${branch}':" | jq -aR .`
+GIT_LOG=`git log --pretty=format:" %h by %an: %s%n" ${1}..${2} | jq -aR .`
+#echo  "{\"summary\":$GIT_SUMMARY , \"log\" : $GIT_LOG\"}" 
+curl  -X POST -H "Content-Type: application/json" -d "{\"summary\": $GIT_SUMMARY , \"log\" : $GIT_LOG }" http://127.0.0.1:1337/gitolite
+
+exit 0
