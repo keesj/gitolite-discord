@@ -4,9 +4,6 @@ Send summaries of git commits to a discord channel.
 
 The scipts here are nothing novel but it took me a few hours to figure out how do this in a way that currently suites my needs. 
 
-
-
-
 ## git hook script
 
 It appears that git has a think called hooks on my ubuntu machine some examples can be found under /usr/share/git-core/contrib/hooks. I was happy to find the following more sane script in [simple-gitbot](https://github.com/ehamberg/simple-gitbot) 
